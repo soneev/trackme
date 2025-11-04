@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "559353819315",
+    "project_id": "trackme-11f8b",
+    "storage_bucket": "trackme-11f8b.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:559353819315:android:400f0e11fa2bb6a94c80c6",
+        "android_client_info": {
+          "package_name": "com.example.my_location_traker_app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDJ81DDjjMvKMixec5ceWXs1KunzdVDQU0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
