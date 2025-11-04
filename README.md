@@ -81,7 +81,7 @@ The app also draws both **live current location routes** and **stored session ro
 1. **Clone the repository:**
 
    ```bash
-   git clone https://github.com/your-username/trackme.git
+   git clone[https://github.com/your-username/trackme.git](https://github.com/soneev/trackme.git)
    cd trackme
    ```
 
