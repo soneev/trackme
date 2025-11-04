@@ -14,6 +14,7 @@ class SessionDetailScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: CustomAppBar(title: "Session Detail"),
       body: LayoutBuilder(
         builder: (context, constraints) {
@@ -50,6 +51,8 @@ class SessionDetailScreen extends StatelessWidget {
                     Consumer<TrackingProvider>(
                       builder: (context, routeInfo, _) {
                         return Card(
+                          color:
+                              Theme.of(context).colorScheme.secondaryContainer,
                           elevation: 6,
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(20),

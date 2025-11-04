@@ -22,8 +22,8 @@ class _SplashScreenState extends State<SplashScreen> {
     // TODO: implement initState
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      // final provider = context.read<CommonDataViewmodel>();
-      // provider.startContinuousAnimation();
+      final provider = context.read<CommonDataViewmodel>();
+      provider.startContinuousAnimation();
     });
   }
 
@@ -43,12 +43,10 @@ class _SplashScreenState extends State<SplashScreen> {
                   color: Theme.of(context).colorScheme.secondary,
                   child: IconCard(
                     color: Theme.of(context).colorScheme.tertiary,
-                    child: Center(
+                    child: ClipOval(
                       child: CustomPngImage(
-                        imageName: AppImages.gpsIc,
-                        height: 60,
-                        width: 60,
-                        color: Colors.teal.shade400,
+                        imageName: AppImages.logo,
+                        boxFit: BoxFit.cover,
                       ),
                     ),
                   ),

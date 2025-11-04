@@ -66,7 +66,18 @@ class _HomeDataState extends State<HomeData> {
                 sessionId: tvm.currentSessionId!,
               );
             } else {
-              return NoDataFOund();
+              return Column(
+                children: [
+                  Text(
+                    "IDENTYFY . LOCATE .EXPLORE",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  ),
+                  CustomPngImage(
+                    imageName: AppImages.place,
+                    boxFit: BoxFit.cover,
+                  ),
+                ],
+              );
             }
           }),
         ),

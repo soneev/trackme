@@ -40,7 +40,7 @@ ThemeData lightMode = ThemeData(
       secondary: AppColors.primary.shade200,
       tertiary: AppColors.primary.shade100,
       onPrimary: AppColors.white,
-      onSurface: AppColors.black,
+      onSurface: Colors.grey.shade700,
       primaryContainer: AppColors.white,
       secondaryContainer: AppColors.lightGrey),
   textTheme: const TextTheme(
@@ -62,18 +62,18 @@ ThemeData darkMode = ThemeData(
   brightness: Brightness.dark,
   primaryColor: AppColors.primary.shade800,
   colorScheme: ColorScheme.dark(
-      surface: Colors.black,
+      surface: Colors.grey.shade800,
       primary: AppColors.primary.shade800,
       secondary: AppColors.primary.shade700,
       tertiary: AppColors.primary.shade600,
       onPrimary: AppColors.white,
       onSurface: AppColors.white,
-      primaryContainer: const Color.fromARGB(255, 39, 36, 36),
-      secondaryContainer: AppColors.primary.shade600),
+      primaryContainer: Colors.grey.shade800,
+      secondaryContainer: Colors.grey.shade500),
   textTheme: const TextTheme(
       bodyLarge: TextStyle(color: AppColors.white),
       bodyMedium: TextStyle(color: AppColors.lightGrey),
-      bodySmall: TextStyle(color: AppColors.grey),
+      bodySmall: TextStyle(color: AppColors.white),
       titleMedium: TextStyle(color: AppColors.white),
       displayMedium: TextStyle(color: AppColors.white)),
   elevatedButtonTheme: ElevatedButtonThemeData(
