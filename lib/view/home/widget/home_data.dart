@@ -68,9 +68,10 @@ class _HomeDataState extends State<HomeData> {
             } else {
               return Column(
                 children: [
+                  SizedBox(height: 20),
                   Text(
                     "IDENTYFY . LOCATE .EXPLORE",
-                    style: Theme.of(context).textTheme.bodyMedium,
+                    style: Theme.of(context).textTheme.titleMedium,
                   ),
                   CustomPngImage(
                     imageName: AppImages.place,

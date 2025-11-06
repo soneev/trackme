@@ -105,8 +105,19 @@ class _SessionHistoryState extends State<SessionHistory> {
                   leading: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Icon(Icons.cloud,
-                          color: synced ? Colors.teal : Colors.grey, size: 22),
+                      !synced
+                          ? CircleAvatar(
+                              backgroundColor: Colors.white,
+                              radius: 15,
+                              child: Padding(
+                                padding: const EdgeInsets.all(2.0),
+                                child: const CupertinoActivityIndicator(
+                                    color: Colors.deepPurple),
+                              ),
+                            )
+                          : Icon(Icons.cloud,
+                              color: synced ? Colors.teal : Colors.grey,
+                              size: 22),
                       const SizedBox(height: 4),
                       Text(
                         synced ? "Synced" : "Pending",
