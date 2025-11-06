@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:my_location_traker_app/utils/app_images.dart';
+import 'package:my_location_traker_app/utils/pip_scop_wrapper.dart';
 
 import 'package:my_location_traker_app/utils/utils_funtions.dart';
 import 'package:my_location_traker_app/view/common/custom_app_bar.dart';
 import 'package:my_location_traker_app/view/common/custom_button.dart';
+import 'package:my_location_traker_app/view/common/custom_image.dart';
 
 import 'package:my_location_traker_app/view/home/widget/home_data.dart';
 
@@ -18,19 +21,31 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final trackVm = Provider.of<TrackingProvider>(context, listen: false);
-    return PopScope(
-      canPop: false,
-      onPopInvoked: (didPop) async {
-        buildCloseConfirmation(context);
-      },
+    final tVm = Provider.of<TrackingProvider>(context);
+    return
+        // PopScope(
+        //   canPop: false,
+        //   onPopInvoked: (didPop) async {
+        //     buildCloseConfirmation(context);
+        //   },
+        //   child:
+        GlobalPiPScope(
+      isTracking: tVm.isTracking ?? false,
+      pipchild: CustomPngImage(
+        imageName: AppImages.logo,
+        boxFit: BoxFit.cover,
+      ),
       child: Scaffold(
         appBar: CustomAppBar(
-          leading: IconButton(
-            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.black),
-            onPressed: () async {
-              buildCloseConfirmation(context);
-            },
-          ),
+          leading: tVm.isTracking ?? false
+              ? SizedBox()
+              : IconButton(
+                  icon:
+                      const Icon(Icons.arrow_back_ios_new, color: Colors.black),
+                  onPressed: () async {
+                    buildCloseConfirmation(context);
+                  },
+                ),
           title: 'Home',
           bgcolor: Theme.of(context).colorScheme.onPrimary,
         ),
@@ -47,7 +62,7 @@ class HomeScreen extends StatelessWidget {
                 bool? success = await trackVm.checkLocationPermission();
                 if (success) {
                   final service = FlutterBackgroundService();
-                  if (!tvm.isTracking!) {
+                  if (!tvm.isTracking) {
                     try {
                       await trackVm.startSession();
 
@@ -112,7 +127,7 @@ class HomeScreen extends StatelessWidget {
                 decoration: BoxDecoration(
                   shape: BoxShape.circle,
                   gradient: LinearGradient(
-                    colors: !tvm.isTracking!
+                    colors: !tvm.isTracking
                         ? [
                             Colors.teal.shade400,
                             Colors.teal.shade700,
@@ -131,10 +146,10 @@ class HomeScreen extends StatelessWidget {
                     // Shimmer background inside the circular button
                     ClipOval(
                       child: Shimmer.fromColors(
-                        baseColor: !tvm.isTracking!
+                        baseColor: !tvm.isTracking
                             ? Colors.amber.shade50
                             : Colors.teal.shade50,
-                        highlightColor: !tvm.isTracking!
+                        highlightColor: !tvm.isTracking
                             ? Colors.amber.shade200
                             : Colors.teal.shade100,
                         period: const Duration(seconds: 3),
@@ -155,7 +170,7 @@ class HomeScreen extends StatelessWidget {
 
                     // 🔹 Foreground text (always visible)
                     Text(
-                      !tvm.isTracking! ? "Start" : "End",
+                      !tvm.isTracking ? "Start" : "End",
                       style: TextStyle(
                         color: Colors.white,
                         fontWeight: FontWeight.bold,
@@ -171,6 +186,7 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
     );
+    // );
   }
 }
 

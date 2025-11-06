@@ -1,5 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
+import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectivity_plus/connectivity_plus.dart';
@@ -37,7 +38,7 @@ class TrackingProvider with ChangeNotifier {
   List<LatLng> currentPath = [];
 
   bool _isTrackin = false;
-  bool? get isTracking => _isTrackin;
+  bool get isTracking => _isTrackin;
   // ➕ Start new session
   Future<void> startSession() async {
     final sessionId = const Uuid().v4();
@@ -48,7 +49,7 @@ class TrackingProvider with ChangeNotifier {
     await _dbHelper.insertSession({
       'session_id': _currentSessionId,
       'start_time': startTime,
-      'end_time': '',
+      'end_time': null,
       'synced': 0,
     });
 
@@ -80,7 +81,7 @@ class TrackingProvider with ChangeNotifier {
     notifyListeners();
   }
 
-  Future<void> loadSessionLocations({String? id}) async {
+  /* Future<void> loadSessionLocations({String? id}) async {
     if (id == null) return;
 
     final rows = await _dbHelper.database.query(
@@ -108,6 +109,31 @@ class TrackingProvider with ChangeNotifier {
 
     print(
         '✅ Total locations loaded for session $currentSessionId: ${currentPath.length}');
+  }*/
+
+  Future<void> loadSessionLocations({String? id}) async {
+    if (id == null) return;
+
+    final rows = await _dbHelper.database.query(
+      'locations',
+      where: 'session_id = ?',
+      whereArgs: [id],
+      orderBy: 'id ASC',
+    );
+
+    final newPath = rows.map((r) {
+      return LatLng(
+        (r['latitude'] as num).toDouble(),
+        (r['longitude'] as num).toDouble(),
+      );
+    }).toList();
+
+    // Only notify if list changed
+    if (newPath.length != currentPath.length) {
+      currentPath = newPath;
+      notifyListeners();
+      log("✅ Updated polyline with ${newPath.length} points");
+    }
   }
 
   /// Optional periodic refresh (when app in foreground)
@@ -132,18 +158,41 @@ class TrackingProvider with ChangeNotifier {
     }
   }
 
-  Future<void> restoreActiveSession() async {
+  // Future<void> restoreActiveSession() async {
+  //   final activeSession = await _dbHelper.getActiveSession();
+  //   if (activeSession != null) {
+  //     _currentSessionId = activeSession['session_id'];
+  //     _isTrackin = true;
+  //     print('♻️ Restored active session: $currentSessionId');
+  //   } else {
+  //     _currentSessionId = null;
+  //     _isTrackin = false;
+  //     print('ℹ️ No active session found');
+  //   }
+  //   notifyListeners();
+  // }
+  bool _isFetchingId = false;
+  bool get isFetching => _isFetchingId;
+  Future<bool> restoreActiveSession() async {
+    _isFetchingId = true;
+    notifyListeners();
     final activeSession = await _dbHelper.getActiveSession();
+
     if (activeSession != null) {
       _currentSessionId = activeSession['session_id'];
+      _isFetchingId = false;
       _isTrackin = true;
-      print('♻️ Restored active session: $currentSessionId');
+      print('♻️ Restored active session: $_currentSessionId');
+      notifyListeners();
+      return true; // ✅ Active session found
     } else {
       _currentSessionId = null;
       _isTrackin = false;
+      _isFetchingId = false;
       print('ℹ️ No active session found');
+      notifyListeners();
+      return false; // ❌ No active session
     }
-    notifyListeners();
   }
 
   final List<SessionModel> _sessionsdata = [];
@@ -215,15 +264,19 @@ class TrackingProvider with ChangeNotifier {
     _refreshTimer = Timer.periodic(const Duration(seconds: 2), (_) async {
       if (!_isTrackin) {
         stopAutoRefresh();
+        log("Provider lat list paused");
         return;
       }
+
       await loadSessionLocations(id: currentSessionId ?? id);
+      log("Provider lat list restored");
     });
   }
 
   void stopAutoRefresh() {
     _refreshTimer?.cancel();
     _refreshTimer = null;
+
     notifyListeners();
   }
 
@@ -313,13 +366,20 @@ class TrackingProvider with ChangeNotifier {
   void startAutoSync() {
     _autoSyncTimer?.cancel();
 
-    _autoSyncTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
-      await _checkAndSync();
-    });
+    if (_isTrackin == true) {
+      stopAutoSync();
+      print(">>>>/ Background tracking active — Timer not started for now.");
 
-    Connectivity().onConnectivityChanged.listen((statuses) async {
-      await _checkAndSync();
-    });
+      return;
+    } else {
+      _autoSyncTimer = Timer.periodic(const Duration(seconds: 30), (_) async {
+        await _checkAndSync();
+      });
+
+      Connectivity().onConnectivityChanged.listen((statuses) async {
+        await _checkAndSync();
+      });
+    }
   }
 
   Future<void> _checkAndSync() async {
@@ -372,7 +432,7 @@ class TrackingProvider with ChangeNotifier {
   void stopAutoSync() {
     _autoSyncTimer?.cancel();
     _autoSyncTimer = null;
-    print("🛑 Auto sync stopped.");
+    print("🛑 firebase Auto sync stopped.");
   }
 
   /// get location distance

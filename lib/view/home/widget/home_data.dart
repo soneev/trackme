@@ -24,7 +24,7 @@ class _HomeDataState extends State<HomeData> {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final trackVm = Provider.of<TrackingProvider>(context, listen: false);
-      trackVm.setSessionId(null);
+
       await trackVm.checkLocationPermission().then((value) {
         if (value) {
           log("permission added");
@@ -37,12 +37,12 @@ class _HomeDataState extends State<HomeData> {
           trackVm.checkLocationPermission();
         }
       });
+      // Then start automatic sync listener
+      trackVm.startAutoSync();
+      await trackVm.restoreActiveSession();
 
       // Load sessions first from local DB
       await trackVm.loadSessionsWithLocations();
-
-      // Then start automatic sync listener
-      trackVm.startAutoSync();
     });
   }
 

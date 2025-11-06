@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
@@ -30,6 +31,8 @@ class _ActiveSessionMapScreenState extends State<ActiveSessionMapScreen> {
   Future<void> _loadInitialData() async {
     WidgetsBinding.instance.addPostFrameCallback((_) async {
       final provider = Provider.of<TrackingProvider>(context, listen: false);
+      // await provider.restoreActiveSession();
+
       provider
           .startAutoRefresh(widget.sessionId); // start live location refresh
     });
@@ -117,7 +120,18 @@ class _ActiveSessionMapScreenState extends State<ActiveSessionMapScreen> {
 
                 if (path.isEmpty) {
                   return const Center(
-                    child: Text('Waiting for live location updates...'),
+                    child: Column(
+                      children: [
+                        CupertinoActivityIndicator(
+                          color: Colors.grey,
+                          animating: true,
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Text('Waiting for live location updates...'),
+                      ],
+                    ),
                   );
                 }
 
@@ -131,7 +145,7 @@ class _ActiveSessionMapScreenState extends State<ActiveSessionMapScreen> {
 
                 // --- Polyline between all tracked points ---
                 final polyline = Polyline(
-                  polylineId: PolylineId(widget.sessionId),
+                  polylineId: PolylineId("${widget.sessionId}_${path.length}"),
                   color: Colors.amber,
                   width: 6,
                   points: path,

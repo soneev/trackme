@@ -19,12 +19,13 @@
         android:permission="android.permission.FOREGROUND_SERVICE_LOCATION" tools:replace="android:exported"/>
         <meta-data 
             android:name="com.google.android.geo.API_KEY" 
-            android:value="YOUR_API_KEY_HERE"/>
+            android:value="AIzaSyB5ZJ6F1mJ7y2tOF8AT2Mnr0djs5-TVszE"/>
         <meta-data
             android:name="com.pravera.flutter_foreground_task.notification_icon"
             android:resource="@mipmap/ic_launcher" />
         <activity
             android:name=".MainActivity"
+            android:supportsPictureInPicture="true"
             android:exported="true"
             android:launchMode="singleTop"
             android:taskAffinity=""
